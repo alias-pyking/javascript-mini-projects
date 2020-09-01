@@ -1,53 +1,42 @@
 /**
  * @author Shubham sk
- * @version 2.0.0
+ * @version 3.0.0
  * @name EasyHttp
  * @description Http library for making http requests (obviously)
+ * @license MIT
  */
 class EasyHttp{
 	// Http Get request
-	get(url) {
-		return new Promise((resolve, reject) => {
-			fetch(url)
-				.then(res => res.json())
-				.then(data => resolve(data))
-				.catch(err => reject(err));
-		});
+	async get(url) {
+		const response = await fetch(url);
+		const resData = await response.json();
+		return resData;
 		
 	}	
-	post(url,data) {
-		return new Promise((resolve, reject) => {
-			fetch(url, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(data)
-			})
-				.then(res => res.json())
-				.then(data => resolve(data))
-				.catch(err => reject(err));
+	async post(url,data) {
+		const response = await fetch(url, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(data)
 		});
+		const resData = await response.json();
+		return resData;
 	}
-	put(url,data) {
-		return new Promise((resolve, reject) => {
-			fetch(url, {
-				method: 'PUT',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(data)
-			})
-				.then(res => res.json())
-				.then(data => resolve(data))
-				.catch(err => reject(err));
+	async put(url,data) {
+		const response = fetch(url, {
+			method: 'PUT',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(data)
 		});
+		const resData = await (await response).json();
+		return resData;
 	}
-	delete(url) {
-		return new Promise((resolve, reject) => {
-			fetch(url, {
-				method: 'DELETE',
-				headers: { 'Content-type': 'application/json' }
-			})
-				.then(res => res.json())
-				.then(data => resolve('Resource deleted.'))
-				.catch(err => reject(err));
+	async delete(url) {
+		const response = fetch(url, {
+			method: 'DELETE',
+			headers: { 'Content-type': 'application/json' }
 		});
+		const resData = await 'Resource delete';
+		return resData;
 	}
 }
