@@ -1,71 +1,43 @@
-// const Signleton = (function () {
-// 	let instance;
-// 	function createInstance() {
-// 		const object = new Object({name:"Shubham"});
-// 		return object;
-// 	}
-// 	return {
-// 		getInstance: function () {
-// 			if (!instance) {
-// 				instance = createInstance();
-// 			}
-// 			return instance;
-// 		}
-// 	}
-// })();
+function EventObserver() {
+  this.observers = [];
+}
 
-// const instanceA = Signleton.getInstance();
-// console.log(instanceA);
+EventObserver.prototype = {
+  subscribe: function (fn) {
+    this.observers.push(fn);
+    console.log(`You are subscribed to ${fn.name}`);
+  },
+  unsubscribe: function (fn) {
+	  this.observers.filter(function (item) {
+		
+		console.log(fn.name);
+		console.log(item.name);
+		if (item != fn) {
+			return item;
+      }
+    });
+    console.log(`You are unsubscribed to ${fn.name}`);
+  },
+  fire: function (fn) {
+    this.observers.forEach((item) => {
+      item.call();
+    });
+  },
+};
 
+const click = new EventObserver();
 
-// Factory pattern
+// Event listner
 
-// function MemberFactory() {
-// 	this.createMember = function (name, type) {
-// 		let member;
-// 		if (type === 'simple') {
-// 			member = new SimpleMembership(name);
-// 		} else if (type === 'standard') {
-// 			member = new StandardMembership(name);
-// 		} else if (type === 'super') {
-// 			member = new SuperMembership(name);
-// 		}
-// 		member.type = type;
-
-// 		member.define = function () {
-// 			console.log(`${this.name} ${this.type} ${this.cost}`);
-// 		}
-// 		return member;
-// 	}
-// }
-
-// class SimpleMembership{
-// 	constructor(name, type) {
-// 		this.name = name;
-// 		this.type = type;
-// 		this.cost = '$5';
-// 	}
-// }
-
-// class StandardMembership{
-// 	constructor(name, type) {
-// 		this.name = name;
-// 		this.type = type;
-// 		this.cost = '$15';
-// 	}
-// }
-
-// class SuperMembership{
-// 	constructor(name, type) {
-// 		this.name = name;
-// 		this.type = type;
-// 		this.cost = '$20';
-// 	}
-// }
-// const member = [];
-// const factory = new MemberFactory();
-// member.push(factory.createMember('john doe', 'simple'));
-// member.push(factory.createMember('shubham', 'super'));
-
-// console.log(member);
-// console.log(member[0].define())
+document.querySelector(".sub-ms").addEventListener("click", function () {
+  click.subscribe(getCurrMilliseconds);
+});
+document.querySelector(".unsub-ms").addEventListener("click", function () {
+  click.unsubscribe(getCurrMilliseconds);
+});
+document.querySelector(".fire").addEventListener("click", function () {
+  click.fire(getCurrMilliseconds);
+});
+const getCurrMilliseconds = function(){
+  console.log(`Current milliseconds: ${new Date().getMilliseconds()}`);
+};
