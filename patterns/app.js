@@ -1,43 +1,47 @@
-function EventObserver() {
-  this.observers = [];
-}
+const User = function (name) {
+  this.name = name;
+  this.chatroom = null;
+};
 
-EventObserver.prototype = {
-  subscribe: function (fn) {
-    this.observers.push(fn);
-    console.log(`You are subscribed to ${fn.name}`);
+User.prototype = {
+  send: function (message, to) {
+    this.chatroom.send(message, this, to);
   },
-  unsubscribe: function (fn) {
-	  this.observers.filter(function (item) {
-		
-		console.log(fn.name);
-		console.log(item.name);
-		if (item != fn) {
-			return item;
+  receive: function (message, from) {
+    console.log(`${from.name} to ${this.name}: ${message}`);
+  },
+};
+
+const Chatroom = function () {
+  let users = {};
+  return {
+    register: function (user) {
+      users[user.name] = user;
+      user.chatroom = this;
+    },
+    send: function (message, from, to) {
+      if (to) {
+        to.receive(message, from);
+      } else {
+        for (key in users) {
+          if (users[key] !== from) {
+            users[key].receive(message, from);
+          }
+        }
       }
-    });
-    console.log(`You are unsubscribed to ${fn.name}`);
-  },
-  fire: function (fn) {
-    this.observers.forEach((item) => {
-      item.call();
-    });
-  },
+    },
+  };
 };
 
-const click = new EventObserver();
+const brad = new User("Brad");
+const shubham = new User("Shubham");
+const sara = new User("Sara");
 
-// Event listner
+const chatroom = new Chatroom();
+chatroom.register(brad);
+chatroom.register(shubham);
+chatroom.register(sara);
 
-document.querySelector(".sub-ms").addEventListener("click", function () {
-  click.subscribe(getCurrMilliseconds);
-});
-document.querySelector(".unsub-ms").addEventListener("click", function () {
-  click.unsubscribe(getCurrMilliseconds);
-});
-document.querySelector(".fire").addEventListener("click", function () {
-  click.fire(getCurrMilliseconds);
-});
-const getCurrMilliseconds = function(){
-  console.log(`Current milliseconds: ${new Date().getMilliseconds()}`);
-};
+brad.send("hello shubham", shubham);
+shubham.send('Hello brad', brad);
+sara.send('Hello guys')
